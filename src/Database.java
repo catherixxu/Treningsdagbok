@@ -11,6 +11,10 @@ import java.sql.Statement;
         private static Statement sment = null;
         private static ResultSet rs = null;
 
+        final static String host = "mysql.stud.ntnu.no";
+        final static String user = "catherix_db";
+        final static String passwd = "hodepute";
+        final static String name = "catherix_treningsdagbok";
         public Database() {
         }
 
@@ -20,7 +24,7 @@ import java.sql.Statement;
 
         public static void connect() {
             try {
-                conn = DriverManager.getConnection("jdbc:mysql://mysql.stud.ntnu.no?user=agnesr&password=hovsmarken");
+                conn = DriverManager.getConnection("jdbc:mysql://" + host + "/" + name + "?" + "user=" + user + "&password=" + passwd );
                 sment = conn.createStatement();
             } catch (SQLException var1) {
                 System.out.println("SQLException: " + var1.getMessage());
@@ -59,12 +63,13 @@ import java.sql.Statement;
             throw new Error("Unresolved compilation problems: \n\tThe method setString(int, String) in the type PreparedStatement is not applicable for the arguments (int, int)\n\tThe method setString(int, String) in the type PreparedStatement is not applicable for the arguments (int, int)\n\tThe method setString(int, String) in the type PreparedStatement is not applicable for the arguments (int, int)\n");
         }
 
-        public static void addOvelse(Ovelse ovelse) throws SQLException {
+        public static void addOvelse(Ovelse ovelse/*, int ovelsesgruppe*/) throws SQLException {
             connect();
             String sql = "INSERT INTO agnesr_Treningsdb.Ovelse\n(ID, Navn)\nVALUES(?, ?)";
             PreparedStatement statement = conn.prepareStatement(sql);
             statement.setInt(1, ovelse.getId());
             statement.setString(2, ovelse.getNavn());
+            //legg til i øvelsesid til øvelsesgruppe
             statement.executeUpdate();
             disconnect();
         }
@@ -84,11 +89,15 @@ import java.sql.Statement;
 
         public static void addFriOvelse(FriOvelse friOvelse) throws SQLException {
             connect();
-            String sql = "INSERT INTO agnesr_Treningsdb.Ovelse\n(ID, Navn, Beskrivelse)\nVALUES(?, ?, ?)";
+            String sql = "INSERT INTO øvelse (ID, navn) VALUES(?, ?)";
             PreparedStatement statement = conn.prepareStatement(sql);
             statement.setInt(1, friOvelse.getId());
             statement.setString(2, friOvelse.getNavn());
-            statement.setString(3, friOvelse.getBeskrivelse());
+            statement.executeUpdate();
+            sql = "INSERT INTO friøvelse (ID, beskrivelse) VALUES(?, ?)";
+            statement = conn.prepareStatement(sql);
+            statement.setInt(1, friOvelse.getId());
+            statement.setString(2, friOvelse.getBeskrivelse());
             statement.executeUpdate();
             disconnect();
         }
@@ -126,5 +135,3 @@ import java.sql.Statement;
             disconnect();
         }
     }
-
-}
