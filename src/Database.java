@@ -5,8 +5,9 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.Properties;
 
-    public class Database {
+public class Database {
         private static Connection conn = null;
         private static Statement sment = null;
         private static ResultSet rs = null;
@@ -24,9 +25,14 @@ import java.sql.Statement;
 
         public static void connect() {
             try {
-                conn = DriverManager.getConnection("jdbc:mysql://" + host + "/" + name + "?" + "user=" + user + "&password=" + passwd );
+                Class.forName("com.mysql.jdbc.Driver");
+                Properties p = new Properties();
+                p.put("user", "catherix_db");
+                p.put("password", "hodepute");
+                conn = DriverManager.getConnection("jdbc:mysql://" + host + "/" + name + "?" + "autoReconnect=true&useSSL=false",p );
                 sment = conn.createStatement();
-            } catch (SQLException var1) {
+            }
+            catch (Exception var1) {
                 System.out.println("SQLException: " + var1.getMessage());
             }
 
@@ -115,12 +121,12 @@ import java.sql.Statement;
 
         public static void addApparat(Apparat apparat) throws SQLException {
             connect();
-            String sql = "INSERT INTO agnesr_Treningsdb.Ovelse\n(ID, Navn, beskrivels)\nVALUES(?, ?, ?)";
-            PreparedStatement statement = conn.prepareStatement(sql);
+            //String sql = "INSERT INTO apparat VALUES((?), (?), (?))";
+            PreparedStatement statement = conn.prepareStatement("INSERT INTO apparat VALUES((?), (?), (?))");
             statement.setInt(1, apparat.getId());
             statement.setString(2, apparat.getNavn());
             statement.setString(3, apparat.getBeskrivelse());
-            statement.executeUpdate();
+            statement.execute();
             disconnect();
         }
 

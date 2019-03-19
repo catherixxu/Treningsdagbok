@@ -80,7 +80,9 @@ public static void main(String[] args) throws SQLException {
 					else if (Integer.parseInt(textInput)==2){
 						System.out.println("Legg til en ovelse på formen 'ID (heltall), Navn' ', Beskrivelse''");
 						textInput=scanner.nextLine();
+						System.out.println(textInput);
 						myList = textInput.split(", ");
+						System.out.println(myList);
 						int id=Integer.parseInt(myList[0]);
 						Ovelse ovelse=new Ovelse(id, myList[1]);
 						FriOvelse friOvelse=new FriOvelse (id, myList[1], myList[2]);
